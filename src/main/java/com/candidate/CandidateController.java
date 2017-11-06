@@ -5,11 +5,9 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-
 @RestController
 @RequestMapping(value = "/candidate")
 public class CandidateController {
-
     CandidateRepository candidateRepository;
 
     @Autowired
@@ -18,32 +16,31 @@ public class CandidateController {
     }
 
     @RequestMapping(value = "/all", method = RequestMethod.GET)
-    public Iterable<Candidate> getAll() {
+    public Iterable getAll() {
         return candidateRepository.findAll();
     }
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public Iterable<Candidate> create(@RequestBody Candidate candidate) {
-        //if(candidate.getEmail()))
-
-        Candidate candidateExists = candidateRepository.findByEmail(candidate.getEmail());
-
-        System.out.println(candidateExists);
-
-        if (candidateExists != null) {
-            candidateRepository.save(candidate);
-            return candidateRepository.findAll();
-        }
+    public Iterable create(@RequestBody Candidate candidate) {
+        candidateRepository.save(candidate);
         return candidateRepository.findAll();
     }
 
-
-    @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
-    public Iterable<Candidate> remove(@PathVariable long id) {
+    @RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
+    public Iterable remove(@PathVariable long id) {
         candidateRepository.deleteById(id);
-
         return candidateRepository.findAll();
     }
 
-
+    @RequestMapping(value = "/soft/{id}", method = RequestMethod.GET)
+    public Iterable softDelete(@PathVariable long id) {
+        Optional byId = candidateRepository.findById(id);
+        Candidate can = (Candidate)byId.get();
+        System.out.println(can.getIsActive());
+        can.setIsActive(false);
+        System.out.println(can.getIsActive());
+        candidateRepository.save(can);
+        System.out.println(byId);
+        return candidateRepository.findAll();
+    }
 }
