@@ -17,7 +17,7 @@ public class CandidateController {
 
     @RequestMapping(value = "/all", method = RequestMethod.GET)
     public Iterable getAll() {
-        return candidateRepository.findAll();
+        return candidateRepository.findAll().st;
     }
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
@@ -35,7 +35,7 @@ public class CandidateController {
     @RequestMapping(value = "/soft/{id}", method = RequestMethod.GET)
     public Iterable softDelete(@PathVariable long id) {
         Optional byId = candidateRepository.findById(id);
-        Candidate can = (Candidate)byId.get();
+        Candidate can = (Candidate) byId.get();
         System.out.println(can.getIsActive());
         can.setIsActive(false);
         System.out.println(can.getIsActive());
@@ -43,4 +43,19 @@ public class CandidateController {
         System.out.println(byId);
         return candidateRepository.findAll();
     }
+
+    @RequestMapping(value = "/update/{id}", method = RequestMethod.POST)
+    public Iterable update(@RequestBody Candidate candidat, @PathVariable long id) {
+        Optional byId = candidateRepository.findById(id);
+        Candidate can = byId.get();
+        System.out.println(candidat.getCandidateName());
+        can.setCandidateName(candidat.getCandidateName());
+        System.out.println(candidat.getEmail());
+        can.setEmail(candidat.getEmail());
+        candidateRepository.save(can);
+        System.out.println(byId);
+        return candidateRepository.findAll();
+
+    }
+
 }
