@@ -1,5 +1,6 @@
 package com.candidate;
 
+import java.util.Collections;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +18,13 @@ public class CandidateController {
 
     @RequestMapping(value = "/all", method = RequestMethod.GET)
     public Iterable getAll() {
-        return candidateRepository.findAll().st;
+        return candidateRepository.findAll();
     }
 
+    @RequestMapping(value = "/id/{id}", method = RequestMethod.GET)
+    public Iterable<Candidate> getById(@PathVariable long id) {
+        return candidateRepository.findAllById(Collections.singleton(id));
+    }
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     public Iterable create(@RequestBody Candidate candidate) {
         candidateRepository.save(candidate);
@@ -47,7 +52,7 @@ public class CandidateController {
     @RequestMapping(value = "/update/{id}", method = RequestMethod.POST)
     public Iterable update(@RequestBody Candidate candidat, @PathVariable long id) {
         Optional byId = candidateRepository.findById(id);
-        Candidate can = byId.get();
+        Candidate can = (Candidate) byId.get();
         System.out.println(candidat.getCandidateName());
         can.setCandidateName(candidat.getCandidateName());
         System.out.println(candidat.getEmail());
